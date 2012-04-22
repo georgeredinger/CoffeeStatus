@@ -10,17 +10,15 @@ parity = SerialPort::NONE
 sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 
 series=[]
-
-while true 
+done=false
+until done  
  currents=sp.gets
  a,b =  currents.split
  if a == b 
-  series << a.to_f	
+	 puts "#{Time.now.to_i} #{a.to_f}"
+	 done = true
  end
- series.each {|s| print "#{s}," }
- puts
 end
 
-sleep 1
 
 sp.close                       
