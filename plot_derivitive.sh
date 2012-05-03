@@ -1,3 +1,3 @@
 #!/bin/bash
-awk -f derivitive.awk < current.log > current_derivitive.log
+awk -f derivitive.awk < pot.log > pot_derivitive.log
 gnuplot < plot_derivitive.gnu    

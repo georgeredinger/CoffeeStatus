@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby 
 require "serialport"
-require "pry"
  
 port_str = "/dev/ttyUSB0"  
 baud_rate = 9600
