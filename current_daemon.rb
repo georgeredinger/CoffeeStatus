@@ -1,25 +1,25 @@
 require "serialport"
 
 def init
-  port_str = "/dev/ttyUSB0"  
-  baud_rate = 9600
-  data_bits = 8
-  stop_bits = 1
-  parity = SerialPort::NONE
+	port_str = "/dev/ttyUSB0"  
+	baud_rate = 9600
+	data_bits = 8
+	stop_bits = 1
+	parity = SerialPort::NONE
 
 	@sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 end
 
 def sample
 	while true 
-	currents=@sp.gets
-	unless currents.nil?
-		a,b =  currents.split
-		if a == b 
-			return a.to_f
+		currents=@sp.gets
+		unless currents.nil?
+			a,b =  currents.split
+			if a == b 
+				return a.to_f
+			end
 		end
 	end
-end
 end
 
 #TODO detect sample rate?
@@ -29,7 +29,8 @@ def main
 	heating=0
 	while true
 		current=sample
-	  #puts "#{Time.now.to_i} #{current}"
+		puts "#{Time.now.to_f} #{current}"
+		STDOUT.flush
 		if current > 0.5 
 			heating+=1
 			riding_edge = true
@@ -39,7 +40,7 @@ def main
 			if heating >=1
 				falling_edge=true
 				riding_edge=false
-				puts "*#{Time.now.to_i} #{heating}"
+				#puts "*#{Time.now.to_f} #{heating}"
 				heating=0
 			end
 		end
