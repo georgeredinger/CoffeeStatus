@@ -1,4 +1,4 @@
-=== Coffee Pot Status
+# Coffee Pot Status
 
 * Brew started
 * Brew finished
