@@ -22,7 +22,7 @@ def tweet(what)
 	if @test
 		puts "Fresh pot"
 	else
-  `twurl -d 'status=Fresh Pot' /1/statuses/update.xml`
+         `twurl -d 'status=Fresh Pot' /1/statuses/update.xml`
 	end
 end
 
@@ -52,7 +52,7 @@ def main
 		current=sample
 		if current[1] > 0.5 
 			if heating == 0 
-		#		puts "#{current[0]} #{heating}"
+		   	puts "#{current[0]} #{heating}"
 			end
 			heating+=1
 			riding_edge = true
