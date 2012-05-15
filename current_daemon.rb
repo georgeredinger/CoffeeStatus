@@ -64,7 +64,7 @@ def main
 				rising_edge=false
 				puts "#{current[0]} #{heating}"
 				if heating > 500
-					tweet('Fresh Pot')
+					tweet("#{Time.now} Fresh Pot")
 				end
 				heating=0
 			end
