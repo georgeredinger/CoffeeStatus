@@ -1,4 +1,5 @@
 require "serialport"
+require "iconv"
 
 def init
 	port_str = "/dev/ttyUSB0"  
@@ -33,8 +34,10 @@ def sample
 	end
 
 	while true 
-		currents=@sp.gets
-		unless currents.nil?
+		line=@sp.gets
+		unless line.nil?
+			ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+			currents = ic.iconv(line)
 			a,b =  currents.split
 			if a == b 
 				return [Time.now.to_f,a.to_f]
