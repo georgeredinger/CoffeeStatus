@@ -52,7 +52,7 @@ def main
 	rising_edge=0
 	heating=0
 	while true
-		current=sample
+	current=sample
 		if current[1] > 0.5 
 			if heating == 0 
 				puts "#{current[0]} #{heating}"
