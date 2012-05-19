@@ -89,7 +89,6 @@ int main() {
 			}
 		}
 
-
 	}
 	fclose(input);
 	return 0;
