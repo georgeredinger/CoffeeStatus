@@ -20,7 +20,7 @@ void tweet(char *what) {
 	timestamp[strlen(timestamp)-1]='\0';
 
 	sprintf(tweet_str,
-		"twurl -d \"status=%s %s\" /1/statuses/update.xml",
+		"twurl -d \"status=%s %s\" /1/statuses/update.xml > /dev/null",
 			timestamp, what);
 	system(tweet_str);
 }
