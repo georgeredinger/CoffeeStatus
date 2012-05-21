@@ -72,6 +72,7 @@ int main() {
 		if(current >= 1){  
 			if(heating == 0 ){
 				printf("%d %d\n", current,heating);
+				fflush(stdout);
 			}
 			heating++;
 			rising_edge = 1;
@@ -82,6 +83,7 @@ int main() {
 				falling_edge=1;
 				rising_edge=0;
 				printf("%d %d\n", current, heating);
+				fflush(stdout);
 				if(heating > 500){
 					tweet("Fresh Pot");
 				}
