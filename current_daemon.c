@@ -1,15 +1,32 @@
-#include <stdio.h> // standard input / output functions
-#include <string.h> // string function definitions
-#include <unistd.h> // UNIX standard function definitions
-#include <fcntl.h> // File control definitions
-#include <errno.h> // Error number definitions
-#include <termios.h> // POSIX terminal control definitionss
-#include <time.h>   // time calls
+#include <sys/types.h>
+#include <stdlib.h>
+#include <iostream>
+#include <time.h>
+#include <stdio.h> 
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h> 
+#include <errno.h> 
+#include <termios.h>
+#include <time.h>   
+
+using namespace std;
+
+//#define TEST 1
 
 char *buffer,*bufptr;
 FILE *input;
 
-void tweet(char *what) {
+#ifdef __linux__
+//arduino millis() like
+unsigned long millis(){
+	struct timespec ts;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	return((unsigned long)(ts.tv_sec * 1000.0 + (ts.tv_nsec/1000000.0)));
+}	
+#endif
+
+void tweet(const char *what) {
 	char tweet_str[141+50];
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -20,12 +37,18 @@ void tweet(char *what) {
 	timestamp[strlen(timestamp)-1]='\0';
 
 	sprintf(tweet_str,
-		"twurl -d \"status=%s %s\" /1/statuses/update.xml > /dev/null",
+			"twurl -d \"status=%s %s\" /1/statuses/update.xml > /dev/null",
 			timestamp, what);
-	system(tweet_str);
+	int rc=system(tweet_str);
+	if(rc !=0){
+		std::cout << "system returned " << rc;
+	}
 }
 
 FILE *open_serial_port(){
+#ifdef TEST 
+	input = fopen("./testsamples.txt", "r");
+#else
 	int fd;
 	FILE *input;
 	struct termios termattr;
@@ -38,16 +61,19 @@ FILE *open_serial_port(){
 		cfsetispeed(&termattr, B9600);
 		tcsetattr(fd, TCSANOW, &termattr);
 	}
+#endif
 	return input;
 }
 
 int sample(FILE *input) {
 	char buff[21]; 
-	char bstr[10];
-	int a,b;
+	int a=0,b=0;
 	char *pb;
+#ifdef TEST
+	usleep(1000); 
+#endif
 	while(1){
-		fgets(buff,20,input);
+		char* rc=fgets(buff,20,input);
 		a=atoi(buff);
 		pb = strchr(buff,' ');
 		if(pb != NULL) {
@@ -63,11 +89,9 @@ int sample(FILE *input) {
 
 int main() {
 	int current;
-	int	rising_edge=0;
-	int	falling_edge=0;
 	int	heating=0;
-  clock_t start, end;
-  double so_far,elapsed;
+	unsigned long start_heat;
+	struct timespec ts;
 
 	input = open_serial_port();
 
@@ -75,30 +99,21 @@ int main() {
 		current = sample(input);
 		if(current >= 1){  
 			if(heating == 0 ){
-				start = clock();
-				printf("Rising 0\n");
+				start_heat = millis();
+				std::cout << "Rising " << start_heat << std::endl;
 				fflush(stdout);
 			}
 			else
 			{
-        end = clock();
-        so_far = ((double) (end - start)) / CLOCKS_PER_SEC;
-				printf("Heating %f\n", so_far);
+				std::cout << "Heating " << (millis()-start_heat) << std::endl ;
 			}
 			heating++;
-			rising_edge = 1;
-			falling_edge = 0;
-			
 		}
 		if(current < 1){
-			if(heating >=1){
-        end = clock();
-        elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-				falling_edge=1;
-				rising_edge=0;
-				printf("Falling %f\n",elapsed);
+			if(heating >= 1){
+				std::cout << "Falling " << (millis()-start_heat) << std::endl  ;
 				fflush(stdout);
-				if(heating > 500){
+				if(heating > 1000){
 					tweet("Fresh Pot");
 				}
 				heating=0;

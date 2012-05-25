@@ -1,3 +1,3 @@
 current_daemon: current_daemon.c
-	gcc -shared-libgcc -o current_daemon current_daemon.c
+	c++   -o current_daemon current_daemon.c -lrt -O2 
 
