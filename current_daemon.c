@@ -66,23 +66,37 @@ int main() {
 	int	rising_edge=0;
 	int	falling_edge=0;
 	int	heating=0;
+  clock_t start, end;
+  double so_far,elapsed;
+
 	input = open_serial_port();
+
 	while(1) {
 		current = sample(input);
 		if(current >= 1){  
 			if(heating == 0 ){
-				printf("%d %d\n", current,heating);
+				start = clock();
+				printf("Rising 0\n");
 				fflush(stdout);
+			}
+			else
+			{
+        end = clock();
+        so_far = ((double) (end - start)) / CLOCKS_PER_SEC;
+				printf("Heating %f\n", so_far);
 			}
 			heating++;
 			rising_edge = 1;
 			falling_edge = 0;
+			
 		}
 		if(current < 1){
 			if(heating >=1){
+        end = clock();
+        elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
 				falling_edge=1;
 				rising_edge=0;
-				printf("%d %d\n", current, heating);
+				printf("Falling %f\n",elapsed);
 				fflush(stdout);
 				if(heating > 500){
 					tweet("Fresh Pot");
