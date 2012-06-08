@@ -11,7 +11,7 @@
 #include <time.h>   
 
 using namespace std;
-
+#define FRESH_THRESHHOLD 1500
 //#define TEST 1
 
 char *buffer,*bufptr;
@@ -105,15 +105,15 @@ int main() {
 			}
 			else
 			{
-				std::cout << "Heating " << (millis()-start_heat) << std::endl ;
+				std::cout << "Heating "  << millis() << " " << (millis()-start_heat) << std::endl ;
 			}
 			heating++;
 		}
 		if(current < 1){
 			if(heating >= 1){
-				std::cout << "Falling " << (millis()-start_heat) << std::endl  ;
+				std::cout << "Falling " << millis() << " " << (millis()-start_heat) << std::endl  ;
 				fflush(stdout);
-				if(heating > 1000){
+				if(heating > FRESH_THRESHHOLD){
 					tweet("Fresh Pot");
 				}
 				heating=0;
