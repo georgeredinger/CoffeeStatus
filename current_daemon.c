@@ -27,9 +27,9 @@ unsigned long millis(){
 #endif
 
 void notify() {
-	int rc=system("./notify.sh");
+	int rc=system("/bin/bash ./notify.sh");
 	if(rc !=0){
-		std::cout << "system returned " << rc;
+		std::cout << "system returned " << rc << endl;
 	}
 }
 
