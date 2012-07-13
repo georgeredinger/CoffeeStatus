@@ -26,6 +26,13 @@ unsigned long millis(){
 }	
 #endif
 
+void notify() {
+	int rc=system("./notify.sh");
+	if(rc !=0){
+		std::cout << "system returned " << rc;
+	}
+}
+
 void tweet(const char *what) {
 	char tweet_str[141+50];
 	time_t rawtime;
@@ -114,7 +121,7 @@ int main() {
 				std::cout << "Falling " << millis() << " " << (millis()-start_heat) << std::endl  ;
 				fflush(stdout);
 				if(heating > FRESH_THRESHHOLD){
-					tweet("Fresh Pot");
+					notify();
 				}
 				heating=0;
 			}
